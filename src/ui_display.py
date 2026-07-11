@@ -23,7 +23,6 @@ def play_warning_sound(audio_path, app_instance):
         pygame.mixer.music.play(loops=-1)
 
         while pygame.mixer.music.get_busy():
-            # Stop alarm if safe or monitoring stopped
             if (not app_instance.ALARM and not app_instance.DISTRACT_ALARM) or not app_instance.camera_running:
                 pygame.mixer.music.stop()
                 break
@@ -47,11 +46,11 @@ class MainDashboard:
         self.camera_running = False
 
         # Alert thresholds
-        self.EAR_THRESHOLD = 0.25          # Eye closure threshold (auto-calibrated)
-        self.MAR_THRESHOLD = 0.50          # Yawn threshold
-        self.CLOSED_EYE_TIME = 2.0         # Seconds before drowsiness alert
-        self.MAX_DISTRACTED_TIME = 2.0     # Seconds before distraction alert
-        self.YAWN_DURATION_LIMIT = 1.5     # Seconds to count one yawn
+        self.EAR_THRESHOLD = 0.25
+        self.MAR_THRESHOLD = 0.50
+        self.CLOSED_EYE_TIME = 2.0
+        self.MAX_DISTRACTED_TIME = 2.0
+        self.YAWN_DURATION_LIMIT = 1.5
 
         # State variables
         self.ALARM = False
@@ -85,7 +84,6 @@ class MainDashboard:
                                          font=("Arial", 16, "bold"), text_color="#00FFCC")
         self.title_label.pack(pady=20)
 
-        # Metric labels
         self.ear_label = ctk.CTkLabel(self.sidebar_frame, text="EAR (Mắt): -- [OFF]",
                                        font=("Arial", 13, "bold"), text_color="#FFFFFF", anchor="w")
         self.ear_label.pack(pady=8, padx=25, fill="x")
@@ -102,7 +100,6 @@ class MainDashboard:
                                                 font=("Arial", 14, "bold"), text_color="#00FFCC", anchor="w")
         self.yawn_counter_label.pack(pady=15, padx=25, fill="x")
 
-        # System status
         self.status_label = ctk.CTkLabel(self.sidebar_frame, text="Hệ thống: SẴN SÀNG",
                                           font=("Arial", 14, "bold"), text_color="#00FFCC")
         self.status_label.pack(pady=15)
@@ -179,7 +176,6 @@ class MainDashboard:
                         current_ear = calculate_ear(payload)
 
                         if current_ear is None:
-                            # Face lost
                             self.current_ear_value = 0.0
                             self.eye_closed_start_time = None
                             self.distracted_start_time = None
@@ -240,16 +236,16 @@ class MainDashboard:
                                     self.distracted_start_time = None
                                     self.DISTRACT_ALARM = False
 
-                        # Overlay status text on frame
+                        # Overlay status on frame
                         text_eye = "CLOSED" if self.current_ear_value < self.EAR_THRESHOLD else "OPEN"
                         cv2.putText(frame, f"EAR: {self.current_ear_value:.3f} [{text_eye}]", (30, 40),
                                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 2)
 
+                        # Use English text to avoid OpenCV font rendering issues with Vietnamese
                         if self.ALARM or self.DISTRACT_ALARM:
-                            cv2.putText(frame, "!!! DANGER CẢNH BÁO !!!", (30, 90),
+                            cv2.putText(frame, "!!! DANGER ALARM !!!", (30, 90),
                                         cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 3)
                     else:
-                        # No face detected
                         self.eye_closed_start_time = None
                         self.distracted_start_time = None
                         self.current_pose_status = "LOST_FACE"
@@ -266,7 +262,6 @@ class MainDashboard:
             self.img_tk = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=(620, 470))
             self.video_label.configure(image=self.img_tk, text="")
 
-            # Update sidebar labels
             if self.is_calibrating:
                 self.ear_label.configure(text=f"EAR (Mắt): {self.current_ear_value:.2f} [CALIB]", text_color="#FFCC00")
                 self.mar_label.configure(text="MAR (Miệng): Đang tính toán...", text_color="#FFCC00")
@@ -288,8 +283,15 @@ class MainDashboard:
                     color_mar = "#FF9900" if text_mar_status == "YAWN" else "#FFFFFF"
                     self.mar_label.configure(text=f"MAR (Miệng): {self.current_mar_value:.2f} [{text_mar_status}]", text_color=color_mar)
 
-                    pose_vi_dict = {"STRAIGHT": "NHÌN THẨNG", "LEFT": "QUAY TRÁI", "RIGHT": "QUAY PHẢI", "DOWN": "CÚI ĐẦU"}
-                    text_pose = pose_vi_dict.get(self.current_pose_status, "NHÌN THẨNG")
+                    # Mirror mode fix: AI returns LEFT/RIGHT from camera perspective,
+                    # flip them for driver's mirror view
+                    pose_vi_dict = {
+                        "STRAIGHT": "NHÌN THẲNG",
+                        "LEFT": "QUAY PHẢI",
+                        "RIGHT": "QUAY TRÁI",
+                        "DOWN": "CÚI ĐẦU"
+                    }
+                    text_pose = pose_vi_dict.get(self.current_pose_status, "NHÌN THẲNG")
                     color_pose = "#FF3333" if self.current_pose_status in ["LEFT", "RIGHT", "DOWN"] else "#FFFFFF"
                     self.pose_label.configure(text=f"HƯỚNG MẶT: {text_pose}", text_color=color_pose)
 
