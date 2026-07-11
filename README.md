@@ -36,33 +36,96 @@ TaxiWarnningVision/
     └── ai_logic.py            # Tính toán EAR, MAR, hướng đầu
 ```
 
-## 🚀 Hướng dẫn cài đặt
+## 📥 Tải xuống & Cài đặt
 
-### Bước 1: Chuẩn bị môi trường
+### Bước 1: Kiểm tra Python
 
-Đảm bảo máy tính đã cài đặt Python 3.14 trở lên.
-
-### Bước 2: Clone dự án
+Đảm bảo máy tính đã cài đặt Python 3.14 trở lên. Kiểm tra bằng lệnh:
 
 ```bash
-git clone <repository-url>
+python --version
+# hoặc
+python3 --version
+```
+
+Nếu chưa cài, tải Python từ: [python.org](https://www.python.org/downloads/)
+
+---
+
+### Bước 2: Clone dự án từ GitHub
+
+Mở Terminal (Linux/Mac) hoặc Command Prompt/PowerShell (Windows) và chạy:
+
+```bash
+# Clone repository về máy
+git clone https://github.com/username/TaxiWarnningVision.git
+
+# Di chuyển vào thư mục dự án
 cd TaxiWarnningVision
 ```
 
-### Bước 3: Tạo môi trường ảo
+---
 
+### Bước 3: Tạo môi trường ảo (Virtual Environment)
+
+Môi trường ảo giúp cô lập các thư viện của dự án, tránh xung đột với các project khác.
+
+**Linux / macOS:**
 ```bash
-python -m venv .venv
-source .venv/bin/activate    # Linux/Mac
-# hoặc
-.venv\Scripts\activate       # Windows
+# Tạo môi trường ảo
+python3 -m venv .venv
+
+# Kích hoạt môi trường ảo
+source .venv/bin/activate
 ```
 
-### Bước 4: Cài đặt thư viện
+**Windows (Command Prompt):**
+```cmd
+# Tạo môi trường ảo
+python -m venv .venv
+
+# Kích hoạt môi trường ảo
+.venv\Scripts\activate
+```
+
+**Windows (PowerShell):**
+```powershell
+# Tạo môi trường ảo
+python -m venv .venv
+
+# Kích hoạt môi trường ảo
+.venv\Scripts\Activate.ps1
+```
+
+> 💡 **Dấu hiệu đã kích hoạt thành công**: Terminal hiện prefix `(.venv)` trước dòng lệnh
+
+---
+
+### Bước 4: Cài đặt thư viện cần thiết
 
 ```bash
 pip install -r requirements.txt
 ```
+
+Quá trình này sẽ cài đặt:
+- customtkinter (Giao diện)
+- opencv-python, cvzone (Xử lý ảnh)
+- mediapipe (Nhận diện khuôn mặt)
+- pygame (Âm thanh)
+- và các thư viện khác...
+
+> ⏱️ **Thời gian cài đặt**: Khoảng 2-5 phút tùy tốc độ mạng
+
+---
+
+### Bước 5: Kiểm tra cài đặt
+
+```bash
+# Kiểm tra các thư viện chính
+python -c "import cv2; import mediapipe; import customtkinter; print('Cài đặt thành công!')"
+```
+
+Nếu không có lỗi xuất hiện, bạn đã sẵn sàng chạy ứng dụng.
 
 ## 📖 Hướng dẫn sử dụng
 
@@ -71,6 +134,10 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+
+> ⚠️ **Lưu ý**: Đảm bảo đã kích hoạt môi trường ảo trước khi chạy (có prefix `(.venv)`)
+
+### Quy trình hoạt động
 
 ### Quy trình hoạt động
 
