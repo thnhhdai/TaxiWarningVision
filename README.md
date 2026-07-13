@@ -58,7 +58,7 @@ Mở Terminal (Linux/Mac) hoặc Command Prompt/PowerShell (Windows) và chạy:
 
 ```bash
 # Clone repository về máy
-git clone https://github.com/username/TaxiWarnningVision.git
+git clone https://github.com/thnhhdai/TaxiWarnningVision.git
 
 # Di chuyển vào thư mục dự án
 cd TaxiWarnningVision
